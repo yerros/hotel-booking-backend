@@ -12,7 +12,7 @@ class HotelImage extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
-        'hotel_id',
+        'id',
         'is_primary',
         'display_order',
     ];
@@ -23,7 +23,7 @@ class HotelImage extends Model implements HasMedia
     }
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('hotel-images')
+        $this->addMediaCollection('hotel_images')
             ->useDisk('public') // sesuai kebutuhan
             ->singleFile(false); // bisa multi upload
     }

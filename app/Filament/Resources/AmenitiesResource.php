@@ -31,8 +31,8 @@ class AmenitiesResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true),
                 IconPicker::make('icon')
-                    ->label('Icon')
-                    ->sets(['heroicons', 'feather']) // kamu bisa pilih set icon lain
+                    ->label('Icon')// kamu bisa pilih set icon lain
+                    ->sets(['fontawesome-solid', 'feather'])
                     ->columns(6)
                     ->required(),
                 Select::make('category')

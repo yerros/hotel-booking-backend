@@ -70,11 +70,11 @@ class HotelController extends Controller
                 'rating' => (float) $hotel->rating,
                 'category' => $hotel->category,
                 'distance_from_center' => (float) $hotel->distance_from_center,
-                'images' => $hotel->images->map(function ($image) {
+                'images' => $hotel->getMedia('hotel_images')->map(function ($media) {
                     return [
-                        'id' => $image->id,
-                        'url' => $image->image_url,
-                        'alt' => $image->alt_text,
+                        'id' => $media->id,
+                        'url' => $media->getUrl(),
+                        'alt' => $media->getCustomProperty('alt_text'), // opsional
                     ];
                 }),
                 'amenities' => $hotel->amenities->map(function ($amenity) {
@@ -84,7 +84,7 @@ class HotelController extends Controller
                         'icon' => $amenity->icon,
                     ];
                 }),
-                'min_price' => $hotel->rooms()->min('price_per_night'),
+                'min_price' => $hotel->rooms()->min('base_price'),
                 'created_at' => $hotel->created_at,
             ];
         });
@@ -218,9 +218,9 @@ class HotelController extends Controller
             ->where(function ($q) use ($request) {
                 $searchTerm = $request->query;
                 $q->where('name', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('city', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('address', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('description', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('city', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('address', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
             });
 
         // If guests specified, filter by room capacity

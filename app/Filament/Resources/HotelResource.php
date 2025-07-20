@@ -9,7 +9,7 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\{TextInput, Textarea, Select, Grid, Toggle, SpatieMediaLibraryFileUpload};
 use Filament\Tables;
-use Filament\Tables\Columns\{TextColumn, IconColumn};
+use Filament\Tables\Columns\{TextColumn, IconColumn, ImageColumn};
 
 class HotelResource extends Resource
 {
@@ -52,9 +52,9 @@ class HotelResource extends Resource
                     ->collection('hotel_images')
                     ->multiple()
                     ->image()
-                    ->enableReordering()
-                    ->enableDownload()
-                    ->enableOpen()
+                    ->reorderable()
+                    ->downloadable()
+                    ->openable()
                     ->columnSpanFull()
                     ->label('Upload Hotel Images'),
             ]);
@@ -69,6 +69,14 @@ class HotelResource extends Resource
                 TextColumn::make('city'),
                 TextColumn::make('rating')->sortable(),
                 TextColumn::make('country'),
+                ImageColumn::make('hotel_images') // ✅ GUNAKAN NAMA KOLEKSI SEBAGAI KOLOM
+                    ->label('Images')
+                    ->getStateUsing(function ($record) {
+                        return $record->getMedia('hotel_images')->map->getUrl(); // ambil semua image di koleksi 'hotel_images'
+                    })
+                    ->circular() // opsional
+                    ->stacked() // opsional
+
             ])
             ->filters([])
             ->actions([

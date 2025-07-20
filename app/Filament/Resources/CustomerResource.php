@@ -25,7 +25,7 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
+                TextInput::make('full_name')
                     ->required()
                     ->maxLength(255),
 
@@ -56,7 +56,7 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
+                TextColumn::make('full_name')->searchable(),
                 TextColumn::make('email')->searchable(),
                 TextColumn::make('phone'),
                 TextColumn::make('created_at')->dateTime(),
@@ -66,6 +66,7 @@ class CustomerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

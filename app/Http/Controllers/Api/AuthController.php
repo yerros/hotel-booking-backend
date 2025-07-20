@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -58,6 +59,9 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        Log::info('Login request: ', $request->all()); // ✔ argumen kedua adalah array
+
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|string',
