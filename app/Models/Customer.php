@@ -2,31 +2,48 @@
 
 namespace App\Models;
 
-
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Customer extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-    protected $keyType = 'string';
 
-    public $incrementing = false;
+    protected $fillable = [
+        'full_name',
+        'email',
+        'phone',
+        'password',
+        'profile_image_url',
+    ];
 
-    protected static function boot()
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
     {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = Str::uuid();
-        });
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 
-        public function bookings()
+    // Accessor untuk nama
+    protected function name(): Attribute
     {
-        return $this->hasMany(Booking::class);
+        return Attribute::make(
+            get: fn () => $this->full_name,
+        );
     }
-    
-    public function reviews()
+
+    // Relasi ke bookings
+    public function bookings()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Bookings::class);
     }
 }
