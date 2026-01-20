@@ -51,13 +51,10 @@ class Hotel extends Model implements HasMedia
         );
     }
 
-    // public function registerMediaCollections(): void
-    // {
-    //     $this->addMediaCollection('hotel_images')->useDisk('public');
-    // }
-
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('hotel_images')->useFallbackUrl('/default.jpg');
+        $this->addMediaCollection('hotel_images')
+            ->useDisk('public')
+            ->useFallbackUrl('/default.jpg');
     }
 }

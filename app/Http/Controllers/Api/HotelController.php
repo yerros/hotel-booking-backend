@@ -32,7 +32,7 @@ class HotelController extends Controller
             ], 422);
         }
 
-        $query = Hotel::with(['images', 'amenities']);
+        $query = Hotel::with(['amenities']);
 
         // Apply filters
         if ($request->has('category')) {
@@ -107,7 +107,7 @@ class HotelController extends Controller
 
     public function show($id)
     {
-        $hotel = Hotel::with(['images', 'amenities', 'rooms'])->find($id);
+        $hotel = Hotel::with(['amenities', 'rooms'])->find($id);
 
         if (!$hotel) {
             return response()->json([
@@ -131,11 +131,11 @@ class HotelController extends Controller
                     'rating' => (float) $hotel->rating,
                     'category' => $hotel->category,
                     'distance_from_center' => (float) $hotel->distance_from_center,
-                    'images' => $hotel->images->map(function ($image) {
+                    'images' => $hotel->getMedia('hotel_images')->map(function ($media) {
                         return [
-                            'id' => $image->id,
-                            'url' => $image->image_url,
-                            'alt' => $image->alt_text,
+                            'id' => $media->id,
+                            'url' => $media->getUrl(),
+                            'alt' => $media->getCustomProperty('alt_text'),
                         ];
                     }),
                     'amenities' => $hotel->amenities->map(function ($amenity) {
@@ -214,7 +214,7 @@ class HotelController extends Controller
             ], 422);
         }
 
-        $query = Hotel::with(['images', 'amenities'])
+        $query = Hotel::with(['amenities'])
             ->where(function ($q) use ($request) {
                 $searchTerm = $request->query;
                 $q->where('name', 'like', '%' . $searchTerm . '%')
@@ -243,11 +243,11 @@ class HotelController extends Controller
                 'rating' => (float) $hotel->rating,
                 'category' => $hotel->category,
                 'distance_from_center' => (float) $hotel->distance_from_center,
-                'images' => $hotel->images->take(1)->map(function ($image) {
+                'images' => $hotel->getMedia('hotel_images')->take(1)->map(function ($media) {
                     return [
-                        'id' => $image->id,
-                        'url' => $image->image_url,
-                        'alt' => $image->alt_text,
+                        'id' => $media->id,
+                        'url' => $media->getUrl(),
+                        'alt' => $media->getCustomProperty('alt_text'),
                     ];
                 }),
                 'amenities' => $hotel->amenities->take(3)->map(function ($amenity) {
